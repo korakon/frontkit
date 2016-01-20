@@ -1,0 +1,38 @@
+{
+  "name": "frontkit",
+  "version": "1.0.0",
+  "description": "Front end starter kit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korakon/frontkit.git"
+  },
+  "keywords": [
+    "web",
+    "react"
+  ],
+  "author": "Korakon <i@korakon.com> (http://korakon.com)",
+  "license": "\tCC0-1.0",
+  "bugs": {
+    "url": "https://github.com/korakon/frontkit/issues"
+  },
+  "homepage": "https://github.com/korakon/frontkit#readme",
+  "dependencies": {
+    "history": "^2.0.0-rc2",
+    "lodash": "^4.0.0",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "redux": "^3.0.5",
+    "redux-actions": "^0.9.1",
+    "redux-logger": "^2.3.2"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.11.1",
+    "browserify": "^13.0.0",
+    "gulp": "^3.9.0",
+    "watchify": "^3.7.0"
+  }
+}
