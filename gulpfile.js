@@ -11,6 +11,7 @@ var gulp = require("gulp"),
     serveStatic = require('serve-static'),
     path = require('path');
 
+
 process.env['NODE_PATH'] = './src';
 
 var vendor = ['react',
@@ -63,7 +64,7 @@ gulp.task('scripts', function() {
         cache: {},
         transform: [
             babelify.configure({
-                presets: ["es2015", "stage-0", "react"],
+                presets: ["es2015", "stage-0", "react"]
                 //sourceMapRelative: path.resolve(__dirname, './geste')
             })
         ],
@@ -77,11 +78,11 @@ gulp.task('scripts', function() {
 
     function bundle() {
         return bundler
-                      .bundle()
-                      .on('error', error)
-                      .pipe(source("geste.js"))
-                      .pipe(gulp.dest('./build'))
-                      .pipe(browserSync.stream());
+            .bundle()
+            .on('error', error)
+            .pipe(source("geste.js"))
+            .pipe(gulp.dest('./build'))
+            .pipe(browserSync.stream());
     }
 
     bundler.on('update', bundle);
