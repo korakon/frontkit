@@ -8,24 +8,22 @@ var gulp = require("gulp"),
     plumber = require('gulp-plumber'),
     postcss = require('gulp-postcss'),
     browserSync = require('browser-sync').create(),
-    serveStatic = require('serve-static'),
-    path = require('path');
+    serveStatic = require('serve-static');
 
-
+// So, you can import your code without specifying relative paths
 process.env['NODE_PATH'] = './src';
 
 var vendor = ['react',
               'react-dom',
-              'path-to-regexp',
               'redux',
-              'redux-thunk',
               'redux-actions',
               'redux-logger',
               'rondpoint',
               'history',
               'lodash'];
 
-var processors = [require('postcss-simple-vars')(),
+var processors = [require('postcss-import')(),
+                  require('postcss-simple-vars')(),
                   require('postcss-nested')(),
                   require('postcss-color-function')(),
                   require('autoprefixer-core')({browsers: ['last 1 version']})];
@@ -35,7 +33,6 @@ function error(e) {
     if (e.stack) gutil.log(e.stack);
     this.emit('end');
 };
-
 
 /*
  * VENDOR
@@ -60,12 +57,11 @@ gulp.task('vendor', function() {
 gulp.task('scripts', function() {
     var bundler = browserify({
         debug: true,
-        entries: ['geste/main/index.js'],
+        entries: ['src/index.js'],
         cache: {},
         transform: [
             babelify.configure({
                 presets: ["es2015", "stage-0", "react"]
-                //sourceMapRelative: path.resolve(__dirname, './geste')
             })
         ],
         packageCache: {},
@@ -104,6 +100,10 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('./build'))
         .pipe(browserSync.stream());
 });
+
+/*
+ * WATCH
+ */
 
 
 gulp.task("watch:styles", function() {
