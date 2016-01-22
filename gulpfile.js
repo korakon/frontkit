@@ -1,3 +1,5 @@
+"use strict";
+
 var gulp = require("gulp"),
     gutil = require('gulp-util'),
     browserify = require("browserify"),
@@ -12,6 +14,7 @@ var gulp = require("gulp"),
 
 // So, you can import your code without specifying relative paths
 process.env['NODE_PATH'] = './src';
+var production = process.env['NODE_ENV'] === 'production';
 
 var vendor = ['react',
               'react-dom',
@@ -26,7 +29,7 @@ var processors = [require('postcss-import')(),
                   require('postcss-simple-vars')(),
                   require('postcss-nested')(),
                   require('postcss-color-function')(),
-                  require('autoprefixer-core')({browsers: ['last 1 version']})];
+                  require('autoprefixer')({browsers: ['last 1 version']})];
 
 function error(e) {
     gutil.log(gutil.colors.red(e.message));
@@ -60,12 +63,10 @@ gulp.task('scripts', function() {
         entries: ['src/index.js'],
         cache: {},
         transform: [
-            babelify.configure({
-                presets: ["es2015", "stage-0", "react"]
-            })
+            babelify,
         ],
         packageCache: {},
-        plugin: [watchify]
+        plugin: production ? [] : [watchify]
     });
 
     bundler.on('log', gutil.log.bind(gutil, 'Watchify '));
@@ -76,7 +77,7 @@ gulp.task('scripts', function() {
         return bundler
             .bundle()
             .on('error', error)
-            .pipe(source("geste.js"))
+            .pipe(source("app.js"))
             .pipe(gulp.dest('./build'))
             .pipe(browserSync.stream());
     }
@@ -93,13 +94,16 @@ gulp.task('scripts', function() {
 
 
 gulp.task('styles', function() {
-    return gulp.src('./geste/main/index.css')
-        .pipe(plumber(error))
-        .pipe(postcss(processors))
-        .pipe(rename('geste.css'))
-        .pipe(gulp.dest('./build'))
-        .pipe(browserSync.stream());
+    let g = gulp.src('./src/index.css')
+            .pipe(plumber(error))
+            .pipe(postcss(processors))
+            .pipe(rename('style.css'))
+            .pipe(gulp.dest('./build'));
+    if (!production)
+        g = g.pipe(browserSync.stream());
+    return g;
 });
+
 
 /*
  * WATCH
@@ -107,11 +111,11 @@ gulp.task('styles', function() {
 
 
 gulp.task("watch:styles", function() {
-    return gulp.watch("./geste/**/*.css", ['styles']);
+    return gulp.watch("./src/**/*.css", ['styles']);
 });
 
 gulp.task("watch:scripts", function() {
-    return gulp.watch("./geste/**/*.js", ['scripts']);
+    return gulp.watch("./src/**/*.js", ['scripts']);
 });
 
 gulp.task('watch', ['watch:styles']);
