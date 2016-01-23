@@ -14,5 +14,12 @@ body {
 
 h1 {
     font-weight: 500;
-    padding-bottom: 1rem;
+    padding-bottom: 1.5rem;
+}
+
+pre {
+    background: color(black a(.7));
+    color: #F1F1F1;
+    padding: 1rem;
+    border-left: 4px solid white;
 }
