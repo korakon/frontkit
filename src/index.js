@@ -13,4 +13,4 @@ const start = () => {
     });
 };
 
-export default start;
+export {start};

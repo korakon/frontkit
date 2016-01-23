@@ -37,11 +37,13 @@ function error(e) {
     this.emit('end');
 };
 
+
 /*
  * VENDOR
  */
 
-gulp.task('vendor', function() {
+
+gulp.task('vendor', () =>  {
     var b = browserify();
 
     b.require(vendor);
@@ -57,10 +59,9 @@ gulp.task('vendor', function() {
  */
 
 
-gulp.task('scripts', function() {
+gulp.task('scripts', () =>  {
     var bundler = browserify({
-        debug: true,
-        entries: ['src/index.js'],
+        debug: production ? true : false,
         cache: {},
         transform: [
             babelify,
@@ -69,8 +70,8 @@ gulp.task('scripts', function() {
         plugin: production ? [] : [watchify]
     });
 
+    bundler.require('./src/index.js', {expose: 'app'});
     bundler.on('log', gutil.log.bind(gutil, 'Watchify '));
-
     vendor.forEach(function(v)  {bundler.ignore(v); bundler.external(v);});
 
     function bundle() {
@@ -93,44 +94,56 @@ gulp.task('scripts', function() {
  */
 
 
-gulp.task('styles', function() {
-    let g = gulp.src('./src/index.css')
-            .pipe(plumber(error))
-            .pipe(postcss(processors))
-            .pipe(rename('style.css'))
-            .pipe(gulp.dest('./build'));
-    if (!production)
-        g = g.pipe(browserSync.stream());
-    return g;
+gulp.task('styles', () =>  {
+    return gulp.src('./src/index.css')
+        .pipe(plumber(error))
+        .pipe(postcss(processors))
+        .pipe(rename('style.css'))
+        .pipe(gulp.dest('./build'))
+        .pipe(browserSync.stream());
 });
 
+
+/*
+ * HTML
+ */
+
+gulp.task('html', () => {
+    return gulp.src('src/index.html')
+        .pipe(gulp.dest('build'))
+        .pipe(browserSync.stream());
+});
 
 /*
  * WATCH
  */
 
-
-gulp.task("watch:styles", function() {
-    return gulp.watch("./src/**/*.css", ['styles']);
+gulp.task("watch:html", () =>  {
+    return gulp.watch("./src/**/*.html", ['html']);
 });
 
-gulp.task("watch:scripts", function() {
+gulp.task("watch:scripts", () =>  {
     return gulp.watch("./src/**/*.js", ['scripts']);
 });
 
-gulp.task('watch', ['watch:styles']);
+gulp.task("watch:styles", () =>  {
+    return gulp.watch("./src/**/*.css", ['styles']);
+});
+
+gulp.task("watch:scripts", () =>  {
+    return gulp.watch("./src/**/*.js", ['scripts']);
+});
+
+gulp.task('watch', ['watch:styles', 'watch:html']);
 
 
-gulp.task('serve', function() {
+gulp.task('serve', () =>  {
     browserSync.init({
         open: false,
-        proxy: {
-            // proxy the backend server
-            target: 'localhost:5000',
-            // but serve static files from ./build
-            middleware: serveStatic('build')
+        server: {
+            baseDir: './build'
         }
     });
 });
 
-gulp.task("default", ['scripts', 'serve', 'watch']);
+gulp.task("default", ['scripts', 'styles', 'html', 'serve', 'watch']);
