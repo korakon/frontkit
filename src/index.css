@@ -23,3 +23,25 @@ pre {
     padding: 1rem;
     border-left: 4px solid white;
 }
+
+a {
+    text-decoration: none;
+    color: darkblue;
+}
+
+a:hover {
+    color: blue;
+}
+
+.menu {
+    list-style: none;
+    margin-bottom: 1.5rem;
+}
+
+.menu li {
+    display: inline-block;
+    padding-right: 1rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
