@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-var gulp = require("gulp"),
+var gulp = require('gulp'),
     gutil = require('gulp-util'),
-    browserify = require("browserify"),
+    browserify = require('browserify'),
     watchify = require('watchify'),
     source = require('vinyl-source-stream'),
     rename = require('gulp-rename'),
@@ -10,7 +10,7 @@ var gulp = require("gulp"),
     plumber = require('gulp-plumber'),
     postcss = require('gulp-postcss'),
     browserSync = require('browser-sync').create(),
-    serveStatic = require('serve-static');
+    spawn = require('child_process').spawn;
 
 // So, you can import your code without specifying relative paths
 process.env['NODE_PATH'] = './src';
@@ -35,13 +35,11 @@ function error(e) {
     gutil.log(gutil.colors.red(e.message));
     if (e.stack) gutil.log(e.stack);
     this.emit('end');
-};
-
+}
 
 /*
  * VENDOR
  */
-
 
 gulp.task('vendor', () =>  {
     var b = browserify();
@@ -53,18 +51,16 @@ gulp.task('vendor', () =>  {
         .pipe(gulp.dest('./build'));
 });
 
-
 /*
  * SCRIPTS
  */
-
 
 gulp.task('scripts', () =>  {
     var bundler = browserify({
         debug: production ? true : false,
         cache: {},
         transform: [
-            babelify,
+            babelify
         ],
         packageCache: {},
         plugin: production ? [] : [watchify]
@@ -78,7 +74,7 @@ gulp.task('scripts', () =>  {
         return bundler
             .bundle()
             .on('error', error)
-            .pipe(source("app.js"))
+            .pipe(source('app.js'))
             .pipe(gulp.dest('./build'))
             .pipe(browserSync.stream());
     }
@@ -88,11 +84,18 @@ gulp.task('scripts', () =>  {
     return bundle();
 });
 
+/*
+ * LINT
+ */
+
+gulp.task('scripts:lint', () => {
+    return spawn('./node_modules/.bin/eslint', ['--cache', './src/**/*.js'],
+                 {stdio: 'inherit'});
+});
 
 /*
  * STYLES
  */
-
 
 gulp.task('styles', () =>  {
     return gulp.src('./src/index.css')
@@ -102,7 +105,6 @@ gulp.task('styles', () =>  {
         .pipe(gulp.dest('./build'))
         .pipe(browserSync.stream());
 });
-
 
 /*
  * HTML
@@ -118,24 +120,19 @@ gulp.task('html', () => {
  * WATCH
  */
 
-gulp.task("watch:html", () =>  {
-    return gulp.watch("./src/**/*.html", ['html']);
+gulp.task('watch:html', () =>  {
+    return gulp.watch('./src/**/*.html', ['html']);
 });
 
-gulp.task("watch:scripts", () =>  {
-    return gulp.watch("./src/**/*.js", ['scripts']);
+gulp.task('watch:scripts', () =>  {
+    return gulp.watch('./src/**/*.js', ['scripts:lint']);
 });
 
-gulp.task("watch:styles", () =>  {
-    return gulp.watch("./src/**/*.css", ['styles']);
+gulp.task('watch:styles', () =>  {
+    return gulp.watch('./src/**/*.css', ['styles']);
 });
 
-gulp.task("watch:scripts", () =>  {
-    return gulp.watch("./src/**/*.js", ['scripts']);
-});
-
-gulp.task('watch', ['watch:styles', 'watch:html']);
-
+gulp.task('watch', ['watch:styles', 'watch:html', 'watch:scripts']);
 
 gulp.task('serve', () =>  {
     browserSync.init({
@@ -146,4 +143,4 @@ gulp.task('serve', () =>  {
     });
 });
 
-gulp.task("default", ['scripts', 'styles', 'html', 'serve', 'watch']);
+gulp.task('default', ['scripts', 'styles', 'html', 'serve', 'watch']);

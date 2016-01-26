@@ -1,5 +1,5 @@
-import {render} from 'react-dom';
-import {createHistory} from 'history';
+import { render } from 'react-dom';
+import { createHistory } from 'history';
 import configure from 'store';
 import App from 'containers/app';
 
@@ -8,8 +8,8 @@ const start = () => {
     const history = createHistory();
     const store = configure();
 
-    history.listen((location) => {
-        render(App({store}), root);
+    history.listen(() => {
+        render(App({ store }), root);
     });
 };
 
