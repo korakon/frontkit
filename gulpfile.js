@@ -10,7 +10,8 @@ var gulp = require('gulp'),
     plumber = require('gulp-plumber'),
     postcss = require('gulp-postcss'),
     browserSync = require('browser-sync').create(),
-    spawn = require('child_process').spawn;
+    spawn = require('child_process').spawn,
+    historyApiFallback = require('connect-history-api-fallback');
 
 // So, you can import your code without specifying relative paths
 process.env['NODE_PATH'] = './src';
@@ -138,7 +139,8 @@ gulp.task('serve', () =>  {
     browserSync.init({
         open: false,
         server: {
-            baseDir: './build'
+            baseDir: './build',
+            middleware: [historyApiFallback()]
         }
     });
 });
