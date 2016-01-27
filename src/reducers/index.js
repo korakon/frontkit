@@ -1,10 +1,8 @@
+import {combineReducers} from 'redux';
+import {reducer as router} from 'rondpoint';
+
 const initial = {};
 
-function reducer(state=initial, action) {
-    switch (action.type) {
-    default:
-        return state;
-    }
-}
-
-export default reducer;
+export default combineReducers({
+    router
+});

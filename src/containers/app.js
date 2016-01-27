@@ -1,5 +1,5 @@
 import React, {DOM, Component} from 'react';
-import { clickable } from 'rondpoint';
+import { clickable, push } from 'rondpoint';
 
 
 function Menu(props) {
@@ -8,14 +8,6 @@ function Menu(props) {
               li(null, a({href: '/'}, 'Home')),
               li(null, a({href: '/hello/test'}, 'Hello')),
               li(null, a({href: '/404'}, 'Not Found')));
-}
-
-function pushState(url) {
-    return {type: 'HISTORY',
-            payload: {
-                method: 'pushState',
-                args: url
-            }};
 }
 
 class App extends Component {
@@ -27,7 +19,7 @@ class App extends Component {
         if (clickable(e, anchor)) {
             e.preventDefault();
             const url = `${anchor.pathname}${anchor.search}`;
-            dispatch(pushState(url));
+            dispatch(push(url));
         }
     }
 

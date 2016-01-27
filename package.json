@@ -28,7 +28,7 @@
     "redux": "^3.0.5",
     "redux-actions": "^0.9.1",
     "redux-logger": "^2.3.2",
-    "rondpoint": "^2.1.0"
+    "rondpoint": "^3.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1",
