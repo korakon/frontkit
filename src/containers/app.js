@@ -1,5 +1,6 @@
 import React, {DOM, Component} from 'react';
 import { clickable, push } from 'rondpoint';
+import { connect } from 'react-redux';
 
 
 function Menu(props) {
@@ -12,7 +13,7 @@ function Menu(props) {
 
 class App extends Component {
     navigate(e) {
-        const dispatch = this.props.store.dispatch;
+        const { dispatch } = this.props;
         const target = e.target;
         const anchor = target.closest('a');
 
@@ -25,7 +26,9 @@ class App extends Component {
 
     render() {
         const { section, h1 } = DOM;
-        const content = React.Children.only(this.props.children);
+        const { children } = this.props;
+        const content = children({ store: this.props.store,
+                                   dispatch: this.props.dispatch });
         return section({id: 'app'},
                        h1(null, 'App'),
                        Menu({onClick: this.navigate.bind(this)}),

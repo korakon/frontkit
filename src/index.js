@@ -1,3 +1,4 @@
+import { createFactory } from 'react';
 import { render } from 'react-dom';
 import { createHistory } from 'history';
 import configure from 'store';
@@ -9,13 +10,11 @@ const start = () => {
     const root = document.getElementById('root');
     const history = createHistory();
     const store = configure(history);
-
     history.listen((location) => {
         const { route, params } = match(location.pathname, routes);
         store.dispatch(sync(location, params));
-        render(App({ store }, route.handler({ store })), root);
+        render(App({ store, dispatch: store.dispatch }, route.handler), root);
     });
 };
-
 
 export {start};
