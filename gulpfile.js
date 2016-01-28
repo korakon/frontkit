@@ -11,20 +11,14 @@ var gulp = require('gulp'),
     postcss = require('gulp-postcss'),
     browserSync = require('browser-sync').create(),
     spawn = require('child_process').spawn,
-    historyApiFallback = require('connect-history-api-fallback');
+    historyApiFallback = require('connect-history-api-fallback'),
+    pkg = require('./package.json');
 
 // So, you can import your code without specifying relative paths
 process.env['NODE_PATH'] = './src';
 var production = process.env['NODE_ENV'] === 'production';
 
-var vendor = ['react',
-              'react-dom',
-              'redux',
-              'redux-actions',
-              'redux-logger',
-              'rondpoint',
-              'history',
-              'lodash'];
+var vendor = Object.keys(pkg.dependencies);
 
 var processors = [require('postcss-import')(),
                   require('postcss-simple-vars')(),
@@ -58,7 +52,7 @@ gulp.task('vendor', () =>  {
 
 gulp.task('scripts', () =>  {
     var bundler = browserify({
-        debug: production ? true : false,
+        debug: production ? false : true,
         cache: {},
         transform: [
             babelify
