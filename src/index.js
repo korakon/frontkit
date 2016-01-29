@@ -1,10 +1,10 @@
-import { createElement as h } from 'react';
+import routes from 'routes';
+import configure from 'store';
+import Root from 'containers/root';
 import { render } from 'react-dom';
 import { createHistory } from 'history';
-import configure from 'store';
-import routes from 'routes';
-import { match, sync } from 'rondpoint';
-import Root from 'containers/root';
+import { match, sync } from 'rondpoint'
+import { createElement as h } from 'react';
 
 const start = () => {
   const el = document.getElementById('root');
