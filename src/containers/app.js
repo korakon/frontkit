@@ -1,39 +1,40 @@
-import React, {DOM, Component} from 'react';
+import {DOM, Component} from 'react';
 import { clickable, push } from 'rondpoint';
 import { connect } from 'react-redux';
+import { createElement as h } from 'react';
 
 
 function Menu(props) {
-    const { ul, li, a } = DOM;
-    return ul({className: 'menu', onClick: props.onClick},
-              li(null, a({href: '/'}, 'Home')),
-              li(null, a({href: '/hello/test'}, 'Hello')),
-              li(null, a({href: '/404'}, 'Not Found')));
+  const { ul, li, a } = DOM;
+  return ul({className: 'menu', onClick: props.onClick},
+            li(null, a({href: '/'}, 'Home')),
+            li(null, a({href: '/hello/test'}, 'Hello')),
+            li(null, a({href: '/404'}, 'Not Found')));
 }
+
 
 class App extends Component {
-    navigate(e) {
-        const { dispatch } = this.props;
-        const target = e.target;
-        const anchor = target.closest('a');
+  navigate(e) {
+    const { dispatch } = this.props;
+    const target = e.target;
+    const anchor = target.closest('a');
 
-        if (clickable(e, anchor)) {
-            e.preventDefault();
-            const url = `${anchor.pathname}${anchor.search}`;
-            dispatch(push(url));
-        }
+    if (clickable(e, anchor)) {
+      e.preventDefault();
+      const url = `${anchor.pathname}${anchor.search}`;
+      dispatch(push(url));
     }
+  }
 
-    render() {
-        const { section, h1 } = DOM;
-        const { children } = this.props;
-        const content = children({ store: this.props.store,
-                                   dispatch: this.props.dispatch });
-        return section({id: 'app'},
-                       h1(null, 'App'),
-                       Menu({onClick: this.navigate.bind(this)}),
-                       content);
-    }
+  render() {
+    const { section, h1 } = DOM;
+    const { children } = this.props;
+    const content = h(children);
+    return section({id: 'app'},
+                   h1(null, 'App'),
+                   h(Menu, {onClick: this.navigate.bind(this)}),
+                   content);
+  }
 }
 
-export default React.createFactory(App);
+export default connect()(App);

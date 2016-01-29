@@ -1,20 +1,21 @@
-import { createFactory } from 'react';
+import { createElement as h } from 'react';
 import { render } from 'react-dom';
 import { createHistory } from 'history';
 import configure from 'store';
 import routes from 'routes';
 import { match, sync } from 'rondpoint';
-import App from 'containers/app';
+import Root from 'containers/root';
 
 const start = () => {
-    const root = document.getElementById('root');
-    const history = createHistory();
-    const store = configure(history);
-    history.listen((location) => {
-        const { route, params } = match(location.pathname, routes);
-        store.dispatch(sync(location, params));
-        render(App({ store, dispatch: store.dispatch }, route.handler), root);
-    });
+  const el = document.getElementById('root');
+  const history = createHistory();
+  const store = configure(history);
+
+  history.listen((location) => {
+    const { route: { handler }, params } = match(location.pathname, routes);
+    store.dispatch(sync(location, params));
+    render(h(Root, { store, handler }), el);
+  });
 };
 
 export {start};
