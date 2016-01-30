@@ -17,9 +17,7 @@ var gulp = require('gulp'),
 // So, you can import your code without specifying relative paths
 process.env['NODE_PATH'] = './src';
 var production = process.env['NODE_ENV'] === 'production';
-
 var vendor = Object.keys(pkg.dependencies);
-
 var processors = [require('postcss-import')(),
                   require('postcss-simple-vars')(),
                   require('postcss-nested')(),
