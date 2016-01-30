@@ -1,4 +1,4 @@
-import {DOM, Component} from 'react';
+import { DOM, Component, Children } from 'react';
 import { clickable, push } from 'rondpoint';
 import { connect } from 'react-redux';
 import { createElement as h } from 'react';
@@ -6,10 +6,10 @@ import { createElement as h } from 'react';
 
 function Menu(props) {
   const { ul, li, a } = DOM;
-  return ul({className: 'menu', onClick: props.onClick},
-            li(null, a({href: '/'}, 'Home')),
-            li(null, a({href: '/hello/test'}, 'Hello')),
-            li(null, a({href: '/404'}, 'Not Found')));
+  return ul({ className: 'menu', onClick: props.onClick },
+            li(null, a({ href: '/' }, 'Home')),
+            li(null, a({ href: '/hello/test' }, 'Hello')),
+            li(null, a({ href: '/404' }, 'Not Found')));
 }
 
 
@@ -29,10 +29,10 @@ class App extends Component {
   render() {
     const { section, h1 } = DOM;
     const { children } = this.props;
-    const content = h(children);
-    return section({id: 'app'},
+    const content = Children.only(children);
+    return section({ id: 'app' },
                    h1(null, 'App'),
-                   h(Menu, {onClick: this.navigate.bind(this)}),
+                   h(Menu, { onClick: this.navigate.bind(this) }),
                    content);
   }
 }

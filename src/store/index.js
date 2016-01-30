@@ -1,6 +1,6 @@
-import {createStore, applyMiddleware} from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
-import {middleware as historyMiddleware} from 'rondpoint';
+import { middleware as historyMiddleware } from 'rondpoint';
 import reducer from 'reducers';
 
 export default function configure(history) {

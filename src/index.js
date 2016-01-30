@@ -1,10 +1,11 @@
 import routes from 'routes';
 import configure from 'store';
-import Root from 'containers/root';
+import App from 'containers/app';
 import { render } from 'react-dom';
 import { createHistory } from 'history';
-import { match, sync } from 'rondpoint'
+import { match, sync } from 'rondpoint';
 import { createElement as h } from 'react';
+import { Provider } from 'react-redux';
 
 const start = () => {
   const el = document.getElementById('root');
@@ -14,8 +15,9 @@ const start = () => {
   history.listen((location) => {
     const { route: { handler }, params } = match(location.pathname, routes);
     store.dispatch(sync(location, params));
-    render(h(Root, { store, handler }), el);
+    render(h(Provider, { store },
+             h(App, null, h(handler))), el);
   });
 };
 
-export {start};
+export { start };
