@@ -23,12 +23,14 @@
   "dependencies": {
     "history": "^2.0.0-rc2",
     "lodash": "^4.0.0",
+    "normalizr": "^2.0.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
     "react-redux": "^4.1.0",
     "redux": "^3.0.5",
     "redux-actions": "^0.9.1",
     "redux-logger": "^2.3.2",
+    "reselect": "^2.0.2",
     "rondpoint": "^3.0.0"
   },
   "devDependencies": {
