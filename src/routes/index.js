@@ -4,7 +4,7 @@ import NotFound from 'containers/notfound';
 
 const routes = [
   route('/', Home),
-  route(/.*/, NotFound)
+  route(/.*/, NotFound),
 ];
 
 export default routes;

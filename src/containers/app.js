@@ -1,4 +1,4 @@
-import { DOM, Component, Children } from 'react';
+import { DOM, Component, Children, PropTypes } from 'react';
 import { clickable, push } from 'rondpoint';
 import { connect } from 'react-redux';
 import { createElement as h } from 'react';
@@ -36,5 +36,10 @@ class App extends Component {
                    content);
   }
 }
+
+App.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  children: PropTypes.element,
+};
 
 export default connect()(App);
