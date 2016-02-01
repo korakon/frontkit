@@ -12,16 +12,40 @@ const spawn = require('child_process').spawn;
 const historyApiFallback = require('connect-history-api-fallback');
 const pkg = require('./package.json');
 
+/*
+ * CONFIG
+ */
+
+const config = {
+  production: process.env.NODE_ENV === 'production',
+  dirs: {
+    build: './build',
+    src: './src',
+  },
+  entries: {
+    //  File path -> build name
+    css: { entry: 'src/index.css', output: 'style.css' },
+    html: { entry: 'src/index.html', output: 'index.html' },
+    js: { entry: './src/index.js', output: 'app.js', expose: 'app' },
+    vendor: { output: 'vendor.js' },
+  },
+  vendor: Object.keys(pkg.dependencies || {}),
+};
+
 // So, you can import your code without specifying relative paths
-process.env.NODE_PATH = './src';
-const debug = process.env.NODE_ENV !== 'production';
-const vendor = Object.keys(pkg.dependencies);
-if (!debug) vendor.splice(vendor.indexOf('redux-logger'), 1);
+process.env.NODE_PATH = config.dirs.src;
+
+// Remove redux-logger from production builds.
+if (!config.production) config.vendor.splice(config.vendor.indexOf('redux-logger'), 1);
 const processors = [require('postcss-import')(),
                     require('postcss-simple-vars')(),
                     require('postcss-nested')(),
                     require('postcss-color-function')(),
                     require('autoprefixer')({ browsers: ['last 1 version'] })];
+
+/*
+ * ERROR HANDLING
+ */
 
 function onerror(e) {
   gutil.log(gutil.colors.red(e.message));
@@ -35,10 +59,10 @@ function onerror(e) {
 
 gulp.task('vendor', () => {
   const b = browserify();
-  b.require(vendor);
+  b.require(config.vendor);
   return b.bundle()
-    .pipe(source('vendor.js'))
-    .pipe(gulp.dest('./build'));
+    .pipe(source(config.entries.vendor.output))
+    .pipe(gulp.dest(config.dirs.build));
 });
 
 /*
@@ -47,25 +71,25 @@ gulp.task('vendor', () => {
 
 gulp.task('scripts', () => {
   const bundler = browserify({
-    debug,
+    debug: !config.production,
     cache: {},
     transform: [
       babelify,
     ],
     packageCache: {},
-    plugin: debug ? [watchify] : [],
+    plugin: config.production ? [] : [watchify],
   });
 
-  bundler.require('./src/index.js', { expose: 'app' });
-  bundler.on('log', gutil.log.bind(gutil, 'Watchify '));
-  vendor.forEach((v) => { bundler.ignore(v); bundler.external(v); });
+  bundler.require(config.entries.js.entry, { expose: config.entries.js.expose });
+  bundler.on('log', gutil.log.bind(gutil, 'Watchify: '));
+  config.vendor.forEach((v) => { bundler.ignore(v); bundler.external(v); });
 
   function bundle() {
     return bundler
       .bundle()
       .on('error', onerror)
-      .pipe(source('app.js'))
-      .pipe(gulp.dest('./build'))
+      .pipe(source(config.entries.js.output))
+      .pipe(gulp.dest(config.dirs.build))
       .pipe(browserSync.stream());
   }
 
@@ -89,11 +113,11 @@ gulp.task('scripts:lint', () => {
  */
 
 gulp.task('styles', () => {
-  return gulp.src('./src/index.css')
+  return gulp.src(config.entries.css.entry)
     .pipe(plumber(onerror))
     .pipe(postcss(processors))
-    .pipe(rename('style.css'))
-    .pipe(gulp.dest('./build'))
+    .pipe(rename(config.entries.css.output))
+    .pipe(gulp.dest(config.dirs.build))
     .pipe(browserSync.stream());
 });
 
@@ -102,8 +126,9 @@ gulp.task('styles', () => {
  */
 
 gulp.task('html', () => {
-  return gulp.src('src/index.html')
-    .pipe(gulp.dest('build'))
+  return gulp.src(config.entries.html.entry)
+    .pipe(rename(config.entries.html.output))
+    .pipe(gulp.dest(config.dirs.build))
     .pipe(browserSync.stream());
 });
 
@@ -116,7 +141,7 @@ gulp.task('watch:html', () => {
 });
 
 gulp.task('watch:scripts', () => {
-  return gulp.watch('./src/**/*.js', ['scripts:lint']);
+  return gulp.watch(['*.js', './src/**/*.js'], ['scripts:lint']);
 });
 
 gulp.task('watch:styles', () => {
@@ -135,4 +160,4 @@ gulp.task('serve', () => {
   });
 });
 
-gulp.task('default', ['scripts', 'styles', 'html', 'serve', 'watch']);
+gulp.task('default', ['vendor', 'scripts', 'styles', 'html', 'serve', 'watch']);
