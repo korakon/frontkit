@@ -3,7 +3,6 @@ import { clickable, push } from 'rondpoint';
 import { connect } from 'react-redux';
 import { createElement as h } from 'react';
 
-
 function Menu(props) {
   const { ul, li, a } = DOM;
   return ul({ className: 'menu', onClick: props.onClick },
@@ -11,7 +10,6 @@ function Menu(props) {
             li(null, a({ href: '/hello/test' }, 'Hello')),
             li(null, a({ href: '/404' }, 'Not Found')));
 }
-
 
 class App extends Component {
   navigate(e) {

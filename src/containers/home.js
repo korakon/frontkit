@@ -1,7 +1,6 @@
 import React, { DOM } from 'react';
 import { connect } from 'react-redux';
 
-
 class Home extends React.Component {
   render() {
     const { section, h1, pre } = DOM;
