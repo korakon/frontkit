@@ -15,7 +15,7 @@
     "react"
   ],
   "author": "Korakon <i@korakon.com> (http://korakon.com)",
-  "license": "\tCC0-1.0",
+  "license": "CC0-1.0",
   "bugs": {
     "url": "https://github.com/korakon/frontkit/issues"
   },
@@ -44,6 +44,7 @@
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.0",
     "connect-history-api-fallback": "^1.1.0",
+    "eslint": "^1.10.3",
     "eslint-config-airbnb": "^4.0.0",
     "eslint-plugin-react": "^3.16.1",
     "gulp": "^3.9.0",
