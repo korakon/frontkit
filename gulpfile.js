@@ -48,8 +48,7 @@ const processors = [require('postcss-import')(),
  */
 
 function onerror(e) {
-  gutil.log(gutil.colors.red(e.message));
-  if (e.stack) gutil.log(e.stack);
+  gutil.log(gutil.colors.red("ERROR:"), e.message);
   this.emit('end');
 }
 
